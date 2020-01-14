@@ -1,4 +1,4 @@
-package s4.B193373; // Please modify to s4.Bnnnnnn, where nnnnnn is your student ID. 
+package s4.B193373; // Please modify to s4.Bnnnnnn, where nnnnnn is your student ID.
 import java.lang.*;
 import s4.specification.*;
 
@@ -57,5 +57,4 @@ public class Frequencer implements FrequencerInterface{
 	    System.out.println("Exception occurred: STOP");
 	}
     }
-}	    
-	    
+}
