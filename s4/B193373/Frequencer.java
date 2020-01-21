@@ -65,13 +65,14 @@ public class Frequencer implements FrequencerInterface{
         
         // ここにコードを記述せよ
         int count = 0;
-        if(i < j)   count = mySpace.length - j;
-        else if(i >= j) count = mySpace.length - i;
+        if(i < j)   count = mySpace.length - j;     // iとjの内、大きい方を開始位置とする
+        else if(i >= j) count = mySpace.length - i; // i=jならばiを参照する
         for(int k=0; k<count; k++){
-            if(mySpace[i+k] > mySpace[j+k]) return 1;
-            else if(mySpace[i+k] < mySpace[j+k]) return -1;
+            // mySpaceに格納されている文字バイトを比較する
+            if(mySpace[i+k] > mySpace[j+k]) return 1;       // i+k番地の要素の方が大きければ1を返す
+            else if(mySpace[i+k] < mySpace[j+k]) return -1; // j+k番地の方が大きければ-1
         }
-        //
+        // i<jならば1、i>jならば-1、i=jならば0を返す
         return i < j ? 1 : i > j ? -1 : 0; // この行は変更しなければいけない。
     }
     
@@ -86,8 +87,10 @@ public class Frequencer implements FrequencerInterface{
         }
         //
         // ここに、int suffixArrayをソートするコードを書け。
-        // 　順番はsuffixCompareで定義されるものとする。
-        for (int i = 0; i < mySpace.length - 1; i++) {
+        // 順番はsuffixCompareで定義されるものとする。
+        /*
+         // バブルソート
+         for (int i = 0; i < mySpace.length - 1; i++) {
             for (int j = (mySpace.length - 1); j > i; j--) {
                 if (suffixCompare(suffixArray[j-1], suffixArray[j]) == 1) {
                     int temp = suffixArray[j-1];
@@ -95,6 +98,41 @@ public class Frequencer implements FrequencerInterface{
                     suffixArray[j] = temp;
                 }
             }
+         }
+         */
+        
+        // ヒープソート
+        int n = mySpace.length-1;   // 全長
+        int parent = n/2-1;       // 親要素(parent以上のインデックスは葉を持たない)
+        for(int i = parent; i >= 0; i--){
+            // iは現在の参照位置、後々変更するのでposに保持
+            int pos = i;
+            // 注目要素
+            int v = suffixArray[pos];
+            while(true){    // 無限ループ
+                // 子要素(jが左子分木、j+1が右子分木)
+                int j = 2*pos+1;
+                // 子要素のインデックスが配列サイズよりも大きい場合、ループを抜け出す
+                if (j > n)  break;
+                // 子要素が配列の最後尾でない時
+                if (j != n) {
+                    // 左子分木と右子分木を大小比較する
+                    if (suffixCompare(suffixArray[j+1], suffixArray[j]) == 1) {
+                        // 常にjに大きい値が入っているようにする
+                        j = j+1;
+                    }
+                }
+                // posの方がjよりも大きい(もしくは同じ)とき、ループから抜ける
+                if (suffixCompare(suffixArray[pos], suffixArray[j]) != 1)   break;
+                // 要素の入れ替え
+                int temp = suffixArray[pos];
+                suffixArray[pos] = suffixArray[j];
+                suffixArray[j] = temp;
+                // 現在の参照位置を更新
+                pos = j;
+            }
+            // 現在の参照位置にもともとの参照位置にあった要素を代入
+            suffixArray[pos] = v;
         }
     }
     
@@ -155,9 +193,10 @@ public class Frequencer implements FrequencerInterface{
         // "Ho"      =     "H"     : "H" is in the head of suffix "Ho"
         //
         // ここに比較のコードを書け
-        for(int a=0; a<k-j; a++){
-            if(i+a >= mySpace.length || mySpace[i+a] < myTarget[j+a])   return -1;
-            else if(mySpace[i+a] > myTarget[j+a]) return 1;
+        for(int pos=0; pos<k-j; pos++){
+            // i+posがmySpaceの配列外に出る場合は終了しなければならない
+            if(i+pos >= mySpace.length || mySpace[i+pos] < myTarget[j+pos])   return -1;
+            else if(mySpace[i+pos] > myTarget[j+pos]) return 1;
         }
         //
         return 0; // この行は変更しなければならない。
@@ -258,7 +297,7 @@ public class Frequencer implements FrequencerInterface{
              A:o Hi Ho
              */
             
-            frequencerObject.setTarget("Hi Ho Hi Hoa".getBytes());
+            frequencerObject.setTarget("Hi Ho".getBytes());
             //
             // ****  Please write code to check subByteStartIndex, and subByteEndIndex
             //
