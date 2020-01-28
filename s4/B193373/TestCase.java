@@ -69,7 +69,7 @@ public class TestCase {
 	    InformationEstimatorInterface myObject;
 	    double value;
 	    System.out.println("checking s4.B193373.InformationEstimator");
-	    myObject = new s4.B193372.InformationEstimator();
+	    myObject = new s4.B193373.InformationEstimator();
 	    myObject.setSpace("3210321001230124".getBytes());
 	    myObject.setTarget("0".getBytes());
 	    value = myObject.estimation();

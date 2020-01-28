@@ -88,9 +88,9 @@ public class Frequencer implements FrequencerInterface{
         //
         // ここに、int suffixArrayをソートするコードを書け。
         // 順番はsuffixCompareで定義されるものとする。
-        /*
-         // バブルソート
-         for (int i = 0; i < mySpace.length - 1; i++) {
+        
+        // バブルソート
+        for (int i = 0; i < mySpace.length - 1; i++) {
             for (int j = (mySpace.length - 1); j > i; j--) {
                 if (suffixCompare(suffixArray[j-1], suffixArray[j]) == 1) {
                     int temp = suffixArray[j-1];
@@ -98,9 +98,9 @@ public class Frequencer implements FrequencerInterface{
                     suffixArray[j] = temp;
                 }
             }
-         }
-         */
+        }
         
+        /*
         // ヒープソート
         int n = mySpace.length-1;   // 全長
         int parent = n/2-1;       // 親要素(parent以上のインデックスは葉を持たない)
@@ -134,6 +134,7 @@ public class Frequencer implements FrequencerInterface{
             // 現在の参照位置にもともとの参照位置にあった要素を代入
             suffixArray[pos] = v;
         }
+         */
     }
     
     // Suffix Arrayを用いて、文字列の頻度を求めるコード
@@ -148,8 +149,6 @@ public class Frequencer implements FrequencerInterface{
         if(spaceReady == false) return 0;
         return subByteFrequency(0, myTarget.length);
     }
-    
-    
     
     public int subByteFrequency(int start, int end) {
         /* This method be work as follows, but much more efficient
