@@ -25,7 +25,7 @@ public class InformationEstimator implements InformationEstimatorInterface{
         // corresponding to substring of String for  byte[] ,
         // It is not implement in class library because internal structure of byte[] requires copy.
         byte [] result = new byte[end - start];
-        for(int i = 0; i<end - start; i++) { result[i] = x[start + i]; };
+        for(int i = 0; i<end-start; i++) { result[i] = x[start + i]; };
         return result;
     }
     
@@ -41,10 +41,8 @@ public class InformationEstimator implements InformationEstimatorInterface{
         myFrequencer.setSpace(space);
     }
     
-    public void plist(){
-        
-    }
-    
+    /*
+    // 改良前
     public double estimation(){
         boolean [] partition = new boolean[myTarget.length+1];
         int np;
@@ -52,45 +50,34 @@ public class InformationEstimator implements InformationEstimatorInterface{
         // System.out.println("np="+np+" length="+myTarget.length);
         double value = Double.MAX_VALUE; // value = mininimum of each "value1".
         
-        
-        for(int p=myTarget.length; p>0; p--) { // There are 2^(n-1) kinds of partitions.
+        for(int p=0; p<np; p++) { // There are 2^(n-1) kinds of partitions.
             // binary representation of p forms partition.
             // for partition {"ab" "cde" "fg"}
             // a b c d e f g   : myTarget
             // T F T F F T F T : partition:
-            /*partition[0] = true; // I know that this is not needed, but..
-             for(int i=0; i<myTarget.length -1;i++) {
-             partition[i+1] = (0 !=((1<<i) & p));
-             }
-             partition[myTarget.length] = true;
-             */
+            partition[0] = true; // I know that this is not needed, but..
+            for(int i=0; i<myTarget.length -1;i++) {
+                partition[i+1] = (0 !=((1<<i) & p));
+            }
+            partition[myTarget.length] = true;
+            
             // Compute Information Quantity for the partition, in "value1"
             // value1 = IQ(#"ab")+IQ(#"cde")+IQ(#"fg") for the above example
             double value1 = (double) 0.0;
-            int start = 0;
-            int mid = p;
-            int end = myTarget.length;
-            
-            // System.out.write(myTarget[end]);
-            
-            /*while(partition[end] == false) {
-             // System.out.write(myTarget[end]);
-             end++;
-             }*/
-            // System.out.print("("+start+","+end+")");
-            if(end-mid == 0){
-                myFrequencer.setTarget(subBytes(myTarget, mid+1, end));
-                int value2 = iq(myFrequencer.frequency());
+            int end = 0;
+            int start = end;
+            while(start<myTarget.length) {
+                // System.out.write(myTarget[end]);
+                end++;;
+                while(partition[end] == false) {
+                    // System.out.write(myTarget[end]);
+                    end++;
+                }
+                // System.out.print("("+start+","+end+")");
+                myFrequencer.setTarget(subBytes(myTarget, start, end));
+                value1 = value1 + iq(myFrequencer.frequency());
+                start = end;
             }
-            else{
-                byte [] b = myTarget;
-                setTarget(subBytes(myTarget, start, mid));
-                double a = estimation();
-            }
-            
-            value1 = value1 + iq(myFrequencer.frequency());
-            start = end;
-            
             // System.out.println(" "+ value1);
             
             // Get the minimal value in "value"
@@ -98,6 +85,25 @@ public class InformationEstimator implements InformationEstimatorInterface{
         }
         return value;
     }
+    */
+    
+    // 改良後
+    public double estimation(){
+        double value = Double.MAX_VALUE; // value = mininimum of each "value1".
+        // 先頭から、文字列の最後まで for文で回す
+        for(int p = 0; p < myTarget.length; p++){
+            double value_min = (double) 0.0;
+            if(myTarget.length > 1){   // 文字列が2文字以上からなるとき
+                myFrequencer.setTarget(subBytes(myTarget, 0, p)); // 0番地からp番地まで
+                value_min += iq(myFrequencer.frequency());  // 情報量の算出
+            }
+            myFrequencer.setTarget(subBytes(myTarget, p, myTarget.length)); // p番地から最後まで
+            value_min += iq(myFrequencer.frequency());  // 情報量の算出
+            if(value_min < value) value = value_min;
+        }
+        return value;
+    }
+    
     
     public static void main(String[] args) {
         InformationEstimator myObject;
