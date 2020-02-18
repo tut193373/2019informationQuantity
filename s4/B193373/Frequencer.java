@@ -101,39 +101,39 @@ public class Frequencer implements FrequencerInterface{
         }
         
         /*
-        // ヒープソート
-        int n = mySpace.length-1;   // 全長
-        int parent = n/2-1;       // 親要素(parent以上のインデックスは葉を持たない)
-        for(int i = parent; i >= 0; i--){
-            // iは現在の参照位置、後々変更するのでposに保持
-            int pos = i;
-            // 注目要素
-            int v = suffixArray[pos];
-            while(true){    // 無限ループ
-                // 子要素(jが左子分木、j+1が右子分木)
-                int j = 2*pos+1;
-                // 子要素のインデックスが配列サイズよりも大きい場合、ループを抜け出す
-                if (j > n)  break;
-                // 子要素が配列の最後尾でない時
-                if (j != n) {
-                    // 左子分木と右子分木を大小比較する
-                    if (suffixCompare(suffixArray[j+1], suffixArray[j]) == 1) {
-                        // 常にjに大きい値が入っているようにする
-                        j = j+1;
-                    }
-                }
-                // posの方がjよりも大きい(もしくは同じ)とき、ループから抜ける
-                if (suffixCompare(suffixArray[pos], suffixArray[j]) != 1)   break;
-                // 要素の入れ替え
-                int temp = suffixArray[pos];
-                suffixArray[pos] = suffixArray[j];
-                suffixArray[j] = temp;
-                // 現在の参照位置を更新
-                pos = j;
-            }
-            // 現在の参照位置にもともとの参照位置にあった要素を代入
-            suffixArray[pos] = v;
-        }
+         // ヒープソート
+         int n = mySpace.length-1;   // 全長
+         int parent = n/2-1;       // 親要素(parent以上のインデックスは葉を持たない)
+         for(int i = parent; i >= 0; i--){
+         // iは現在の参照位置、後々変更するのでposに保持
+         int pos = i;
+         // 注目要素
+         int v = suffixArray[pos];
+         while(true){    // 無限ループ
+         // 子要素(jが左子分木、j+1が右子分木)
+         int j = 2*pos+1;
+         // 子要素のインデックスが配列サイズよりも大きい場合、ループを抜け出す
+         if (j > n)  break;
+         // 子要素が配列の最後尾でない時
+         if (j != n) {
+         // 左子分木と右子分木を大小比較する
+         if (suffixCompare(suffixArray[j+1], suffixArray[j]) == 1) {
+         // 常にjに大きい値が入っているようにする
+         j = j+1;
+         }
+         }
+         // posの方がjよりも大きい(もしくは同じ)とき、ループから抜ける
+         if (suffixCompare(suffixArray[pos], suffixArray[j]) != 1)   break;
+         // 要素の入れ替え
+         int temp = suffixArray[pos];
+         suffixArray[pos] = suffixArray[j];
+         suffixArray[j] = temp;
+         // 現在の参照位置を更新
+         pos = j;
+         }
+         // 現在の参照位置にもともとの参照位置にあった要素を代入
+         suffixArray[pos] = v;
+         }
          */
     }
     
@@ -227,9 +227,20 @@ public class Frequencer implements FrequencerInterface{
         // if target_start_end is "Ho ", it will return 6.
         //
         // ここにコードを記述せよ。
-        for(int i=0; i<mySpace.length; i++){
-            if(targetCompare(suffixArray[i], start, end) == 0)  return i;
+        /*
+         for(int i=0; i<mySpace.length; i++){
+         if(targetCompare(suffixArray[i], start, end) == 0)  return i;
+         }
+         */
+        
+        int low = 0, high = mySpace.length-1;
+        while(low <= high){
+            int mid = low + (high - low)/2;
+            if(targetCompare(suffixArray[mid], start, end) == 0)    return mid;
+            else if(targetCompare(suffixArray[mid], start, end) == -1)  low = mid+1;
+            else if(targetCompare(suffixArray[mid], start, end) == 1)  high = mid-1;
         }
+        
         //
         return -1; //このコードは変更しなければならない。
     }
@@ -258,9 +269,21 @@ public class Frequencer implements FrequencerInterface{
         // if target_start_end is"i", it will return 9 for "Hi Ho Hi Ho".
         //
         //　ここにコードを記述せよ
+        
+        
         for(int i=mySpace.length-1; i>=0; i--){
             if(targetCompare(suffixArray[i], start, end) == 0)  return i+1;
         }
+        
+        /*
+         int low = 0, high = mySpace.length-1;
+         while(low <= high){
+         int mid = low + (high - low)/2;
+         if(targetCompare(suffixArray[mid], start, end) == 0)    return mid;
+         else if(targetCompare(suffixArray[mid], start, end) == -1)  low = mid+1;
+         else if(targetCompare(suffixArray[mid], start, end) == 1)  high = mid-1;
+         }
+         */
         //
         return -1; // この行は変更しなければならない、
     }
